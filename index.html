@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScreenTime Gatekeeper — Think Before You Scroll</title>
+  <meta name="description" content="An AI-powered ScreenTime Gatekeeper to help you overcome doomscrolling and be intentional with your apps.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-background">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+  </div>
+
+  <div class="main-container">
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-badge">
+          <span class="shield-icon">🛡️</span>
+          <span class="status-dot pulse" title="Guard Active"></span>
+        </div>
+        <div class="brand-text">
+          <h1>ScreenTime Gatekeeper</h1>
+          <p class="subtitle">Think before you scroll.</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <span class="db-pill" id="dbStatusPill" title="Database Connected">
+          <span class="db-dot"></span> DB: Local Active
+        </span>
+        <span class="live-pill">
+          <span class="dot"></span> Active Protection
+        </span>
+        <button id="resetChatBtn" class="icon-btn" title="Restart Conversation & Clear Chat">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Grid -->
+    <main class="content-grid">
+      <!-- Left: Chat Panel -->
+      <section class="chat-card glass-panel" aria-label="ScreenTime Gatekeeper Chat">
+        <div class="chat-card-header">
+          <div class="ai-profile">
+            <div class="ai-avatar">🛡️</div>
+            <div>
+              <h2 class="ai-name">Friday</h2>
+              <span class="ai-status">ScreenTime Gatekeeper AI</span>
+            </div>
+          </div>
+          <div class="mode-badge" id="sessionStatusBadge">
+            🔒 Guarded Mode
+          </div>
+        </div>
+
+        <!-- Chat messages stream -->
+        <div class="chat-messages" id="chatMessages" role="log" aria-live="polite">
+          <!-- Messages will be injected by JavaScript -->
+        </div>
+
+        <!-- Typing Indicator (Hidden by default) -->
+        <div class="typing-indicator-container hidden" id="typingIndicator">
+          <div class="ai-avatar-tiny">🛡️</div>
+          <div class="typing-bubble">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+
+        <!-- Quick suggestions chips -->
+        <div class="quick-chips-wrapper">
+          <span class="chips-label">Quick Prompts:</span>
+          <div class="quick-chips" id="quickChips">
+            <button class="chip" data-prompt="I want to open Instagram.">📱 Open Instagram</button>
+            <button class="chip" data-prompt="I want to watch YouTube.">🎥 Watch YouTube</button>
+            <button class="chip" data-prompt="I need Instagram for college work.">🎓 College Project</button>
+            <button class="chip" data-prompt="I'm just bored.">🥱 I'm bored</button>
+            <button class="chip" data-prompt="I want to play games.">🎮 Play Games</button>
+          </div>
+        </div>
+
+        <!-- Chat Input Bar -->
+        <form class="chat-input-form" id="chatForm">
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              id="userInput" 
+              placeholder="Tell Friday what you want to use..." 
+              autocomplete="off" 
+              required
+            />
+            <button type="submit" id="sendBtn" class="send-btn" aria-label="Send message">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="22" y1="2" x2="11" y2="13"></line>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Right: Usage Dashboard & Focus Card -->
+      <aside class="dashboard-column">
+        <!-- Focus Score Card -->
+        <div class="stats-card glass-panel focus-card">
+          <div class="card-title-row">
+            <h3>Focus Health</h3>
+            <span class="badge-tag">Daily Metric</span>
+          </div>
+          
+          <div class="focus-metric-wrap">
+            <div class="focus-circle">
+              <svg class="progress-ring" width="110" height="110">
+                <circle class="progress-ring-bg" stroke-width="8" fill="transparent" r="46" cx="55" cy="55"/>
+                <circle class="progress-ring-fill" stroke-width="8" stroke-linecap="round" fill="transparent" r="46" cx="55" cy="55"/>
+              </svg>
+              <div class="focus-number-display">
+                <span class="score-val" id="focusScoreValue">72</span>
+                <span class="score-max">/100</span>
+              </div>
+            </div>
+
+            <div class="focus-details">
+              <div class="focus-status-pill">Fair Control</div>
+              <p class="focus-advice">3 intentional unlocks today. Watch out for passive scrolling!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's Usage Breakdown -->
+        <div class="stats-card glass-panel usage-card">
+          <div class="card-title-row">
+            <h3>Today's Usage</h3>
+            <span class="time-stamp">Updated Just Now</span>
+          </div>
+
+          <div class="usage-list">
+            <!-- Instagram -->
+            <div class="usage-item" data-app="instagram">
+              <div class="app-icon-wrap ig">
+                <span>📸</span>
+              </div>
+              <div class="app-meta">
+                <div class="app-info-row">
+                  <span class="app-name">Instagram</span>
+                  <span class="app-duration">52 min</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill ig-fill" style="width: 65%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- YouTube -->
+            <div class="usage-item" data-app="youtube">
+              <div class="app-icon-wrap yt">
+                <span>▶️</span>
+              </div>
+              <div class="app-meta">
+                <div class="app-info-row">
+                  <span class="app-name">YouTube</span>
+                  <span class="app-duration">1h 15m</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill yt-fill" style="width: 85%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gaming -->
+            <div class="usage-item" data-app="gaming">
+              <div class="app-icon-wrap game">
+                <span>🎮</span>
+              </div>
+              <div class="app-meta">
+                <div class="app-info-row">
+                  <span class="app-name">Gaming</span>
+                  <span class="app-duration">35 min</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill game-fill" style="width: 45%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="total-screen-footer">
+            <span class="total-label">Total Screen Time:</span>
+            <span class="total-time">2h 42m</span>
+          </div>
+        </div>
+
+        <!-- Mindful Gatekeeper Tip / Pass status -->
+        <div class="stats-card glass-panel tip-card" id="passCard">
+          <div class="tip-header">
+            <span class="tip-icon">💡</span>
+            <h4>Gatekeeper Rule</h4>
+          </div>
+          <p class="tip-text" id="passCardText">
+            "Before reaching for your phone on autopilot, name the single reason for unlocking. 80% of regretful screen time begins with unintentional taps."
+          </p>
+          <div class="active-pass-badge hidden" id="activePassBadge">
+            <span class="pass-sparkle">⏱️</span>
+            <div>
+              <strong>15-Minute Focus Pass Active</strong>
+              <small id="passSubText">Stay on task & close when done</small>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>🛡️ <strong>ScreenTime Gatekeeper Prototype</strong> — Built for mindful digital habits.</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
