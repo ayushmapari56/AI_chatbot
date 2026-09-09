@@ -1,0 +1,30 @@
+{
+  "name": "agen-bigtop-ciy-social",
+  "version": "1.0.0",
+  "description": "A responsive site for Agen- bigtop | Ciy-social showcasing services, portfolio, and testimonials.",
+  "main": "src/main.tsx",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "keywords": [
+    "agency",
+    "website",
+    "portfolio",
+    "services",
+    "testimonials"
+  ],
+  "author": "Agen- bigtop",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "vite": "^2.6.4"
+  },
+  "devDependencies": {
+    "typescript": "^4.4.3",
+    "eslint": "^7.32.0",
+    "eslint-plugin-react": "^7.27.1"
+  }
+}

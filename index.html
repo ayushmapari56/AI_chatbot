@@ -37,9 +37,10 @@
         <span class="db-pill" id="dbStatusPill" title="Database Connected">
           <span class="db-dot"></span> DB: Local Active
         </span>
-        <span class="live-pill">
-          <span class="dot"></span> Active Protection
-        </span>
+        <button id="openSettingsBtn" class="settings-pill-btn" title="AI Model & API Key Settings">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+          <span id="headerProviderLabel">API Settings</span>
+        </button>
         <button id="resetChatBtn" class="icon-btn" title="Restart Conversation & Clear Chat">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         </button>
@@ -54,12 +55,17 @@
           <div class="ai-profile">
             <div class="ai-avatar">🛡️</div>
             <div>
-              <h2 class="ai-name">Friday</h2>
+              <div class="ai-title-row">
+                <h2 class="ai-name">Friday</h2>
+                <span class="provider-pill" id="activeProviderPill">✨ Demo Mode</span>
+              </div>
               <span class="ai-status">ScreenTime Gatekeeper AI</span>
             </div>
           </div>
-          <div class="mode-badge" id="sessionStatusBadge">
-            🔒 Guarded Mode
+          <div class="header-badges">
+            <div class="mode-badge" id="sessionStatusBadge">
+              🔒 Guarded Mode
+            </div>
           </div>
         </div>
 
@@ -223,8 +229,136 @@
 
     <!-- Footer -->
     <footer class="app-footer">
-      <p>🛡️ <strong>ScreenTime Gatekeeper Prototype</strong> — Built for mindful digital habits.</p>
+      <p>🛡️ <strong>ScreenTime Gatekeeper</strong> — Powered by Real AI & Mindful Habit Science.</p>
     </footer>
+  </div>
+
+  <!-- AI Settings & API Key Modal -->
+  <div class="modal-backdrop hidden" id="settingsModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-window glass-panel">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">⚙️</span>
+          <div>
+            <h3 id="modalTitle">AI Engine & API Key Settings</h3>
+            <p class="modal-desc">Connect real LLMs (Gemini, OpenAI, Groq) to unlock live intelligent gatekeeping.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeSettingsBtn" title="Close Settings">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Provider Selection -->
+        <div class="form-group">
+          <label class="form-label">Select AI Provider</label>
+          <div class="provider-grid">
+            <label class="provider-card" data-provider="gemini">
+              <input type="radio" name="aiProvider" value="gemini" checked>
+              <div class="provider-card-content">
+                <span class="provider-icon">✨</span>
+                <div class="provider-info">
+                  <strong>Google Gemini</strong>
+                  <span class="provider-tag free">Free Tier Available</span>
+                </div>
+              </div>
+            </label>
+
+            <label class="provider-card" data-provider="groq">
+              <input type="radio" name="aiProvider" value="groq">
+              <div class="provider-card-content">
+                <span class="provider-icon">⚡</span>
+                <div class="provider-info">
+                  <strong>Groq (Llama 3.3)</strong>
+                  <span class="provider-tag fast">Ultra Fast & Free</span>
+                </div>
+              </div>
+            </label>
+
+            <label class="provider-card" data-provider="openai">
+              <input type="radio" name="aiProvider" value="openai">
+              <div class="provider-card-content">
+                <span class="provider-icon">🤖</span>
+                <div class="provider-info">
+                  <strong>OpenAI</strong>
+                  <span class="provider-tag pro">GPT-4o Mini</span>
+                </div>
+              </div>
+            </label>
+
+            <label class="provider-card" data-provider="simulated">
+              <input type="radio" name="aiProvider" value="simulated">
+              <div class="provider-card-content">
+                <span class="provider-icon">🛡️</span>
+                <div class="provider-info">
+                  <strong>Simulated Demo</strong>
+                  <span class="provider-tag local">No API Key Needed</span>
+                </div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- API Key Input (Hidden when simulated is chosen) -->
+        <div class="form-group" id="apiKeySection">
+          <div class="label-with-link">
+            <label for="apiKeyInput" class="form-label">API Key</label>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" id="apiKeyHelpLink" class="helper-link">
+              Get a free Gemini API key ↗
+            </a>
+          </div>
+          <div class="input-password-wrap">
+            <input 
+              type="password" 
+              id="apiKeyInput" 
+              class="form-control" 
+              placeholder="Paste your API key here (e.g. AIzaSy...)"
+              autocomplete="off"
+              spellcheck="false"
+            >
+            <button type="button" class="toggle-password-btn" id="toggleApiKeyVisibility" title="Toggle Visibility">
+              👁️
+            </button>
+          </div>
+          <span class="input-helper-text">
+            🔒 Stored securely in your browser's LocalStorage. Never sent to third-party servers.
+          </span>
+        </div>
+
+        <!-- Model Selection -->
+        <div class="form-group" id="modelSelectSection">
+          <label for="modelSelect" class="form-label">Model Selection</label>
+          <select id="modelSelect" class="form-control">
+            <!-- Dynamically populated based on provider -->
+          </select>
+        </div>
+
+        <!-- Persona / Guard Rigor -->
+        <div class="form-group">
+          <label for="guardPersonaSelect" class="form-label">Gatekeeper Persona Tone</label>
+          <select id="guardPersonaSelect" class="form-control">
+            <option value="balanced" selected>Balanced & Mindful (Friday) — Friendly accountability</option>
+            <option value="strict">Strict Stoic Guardian — High resistance to procrastination</option>
+            <option value="coach">Empathetic Focus Coach — Supportive reflection and advice</option>
+          </select>
+        </div>
+
+        <!-- Connection Test Status Box -->
+        <div class="test-status-box hidden" id="testStatusBox">
+          <span class="test-status-icon" id="testStatusIcon">⏳</span>
+          <span class="test-status-text" id="testStatusText">Testing connection...</span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="testConnectionBtn">
+          <span>🧪 Test Connection</span>
+        </button>
+        <div class="footer-action-group">
+          <button type="button" class="btn btn-ghost" id="cancelSettingsBtn">Cancel</button>
+          <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save & Apply</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script src="script.js"></script>
