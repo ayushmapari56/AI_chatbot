@@ -41,7 +41,7 @@ Behavior Rules:
 
   try {
     if (provider === 'gemini' && geminiKey) {
-      const selectedModel = model || 'gemini-1.5-flash';
+      const selectedModel = (model && !model.includes('1.5') && !model.includes('2.5')) ? model : 'gemini-3.7-flash';
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${geminiKey}`;
 
       const contents = history.map(h => ({
@@ -118,8 +118,8 @@ Behavior Rules:
       return res.status(200).json({ text });
     }
 
-    return res.status(200).json({ 
-      text: "No backend API key configured on server. Use the client Settings modal to enter your personal key!" 
+    return res.status(200).json({
+      text: "No backend API key configured on server. Use the client Settings modal to enter your personal key!"
     });
 
   } catch (error) {

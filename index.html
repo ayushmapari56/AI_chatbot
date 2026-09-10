@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#f8fafc">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>ScreenTime Gatekeeper — Think Before You Scroll</title>
   <meta name="description" content="An AI-powered ScreenTime Gatekeeper to help you overcome doomscrolling and be intentional with your apps.">
   
@@ -29,26 +32,101 @@
         </div>
         <div class="brand-text">
           <h1>ScreenTime Gatekeeper</h1>
-          <p class="subtitle">Think before you scroll.</p>
+          <p class="subtitle">Mindful AI Guardian • Think before you scroll</p>
         </div>
       </div>
       
       <div class="header-actions">
-        <span class="db-pill" id="dbStatusPill" title="Database Connected">
-          <span class="db-dot"></span> DB: Local Active
+        <div class="header-score-pill" title="Live Focus Score">
+          <span class="score-pill-dot"></span>
+          <span>Focus Score: <strong id="headerScoreValue">72</strong>/100</span>
+        </div>
+        <span class="db-pill" id="dbStatusPill" title="Local Storage Memory Active">
+          <span class="db-dot"></span> Memory Active
         </span>
         <button id="openSettingsBtn" class="settings-pill-btn" title="AI Model & API Key Settings">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
-          <span id="headerProviderLabel">API Settings</span>
+          <span id="headerProviderLabel">AI Engine</span>
         </button>
-        <button id="resetChatBtn" class="icon-btn" title="Restart Conversation & Clear Chat">
+        <button id="resetChatBtn" class="icon-btn" title="Clear Chat & Restart Context">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         </button>
       </div>
     </header>
 
+    <!-- Top KPI Highlights Strip -->
+    <section class="kpi-strip" aria-label="Daily Screen Time Overview">
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon-wrap time">⏱️</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Today's Screen Time</span>
+          <div class="kpi-val-row">
+            <h3 class="kpi-val" id="kpiTotalTime">4h 32m</h3>
+            <span class="kpi-badge good">↓ 18m vs avg</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon-wrap saved">🛡️</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Time Saved Today</span>
+          <div class="kpi-val-row">
+            <h3 class="kpi-val" id="kpiTimeSaved">47 min</h3>
+            <span class="kpi-badge good" id="kpiAvoidedCount">6 avoided</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon-wrap app">📱</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Most Used App</span>
+          <div class="kpi-val-row">
+            <h3 class="kpi-val">Instagram</h3>
+            <span class="kpi-sub">52 min</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon-wrap unlock">🔓</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Phone Unlocks</span>
+          <div class="kpi-val-row">
+            <h3 class="kpi-val" id="kpiSessions">18</h3>
+            <span class="kpi-sub">Sessions today</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="kpi-card glass-panel">
+        <div class="kpi-icon-wrap focus">🎯</div>
+        <div class="kpi-info">
+          <span class="kpi-label">Focus Score</span>
+          <div class="kpi-val-row">
+            <h3 class="kpi-val" id="kpiFocusScore">72/100</h3>
+            <span class="kpi-badge neutral">Fair Control</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mobile Segmented Navigation Tabs (Visible on screens <= 900px) -->
+    <nav class="mobile-nav-tabs" id="mobileNavTabs" aria-label="Mobile View Navigation">
+      <button type="button" class="mobile-tab-btn active" data-tab="chat">
+        <span class="tab-icon">💬</span>
+        <span class="tab-text">Guardian Chat</span>
+        <span class="tab-badge-dot"></span>
+      </button>
+      <button type="button" class="mobile-tab-btn" data-tab="dashboard">
+        <span class="tab-icon">📊</span>
+        <span class="tab-text">Stats & Goals</span>
+      </button>
+    </nav>
+
     <!-- Main Content Grid -->
-    <main class="content-grid">
+    <main class="content-grid" id="mainContentGrid">
       <!-- Left: Chat Panel -->
       <section class="chat-card glass-panel" aria-label="ScreenTime Gatekeeper Chat">
         <div class="chat-card-header">
@@ -57,12 +135,15 @@
             <div>
               <div class="ai-title-row">
                 <h2 class="ai-name">Friday</h2>
-                <span class="provider-pill" id="activeProviderPill">✨ Demo Mode</span>
+                <span class="provider-pill" id="activeProviderPill">✨ Gemini AI</span>
               </div>
-              <span class="ai-status">ScreenTime Gatekeeper AI</span>
+              <span class="ai-status"><span class="status-indicator-online"></span> Digital Focus Coach & Gatekeeper</span>
             </div>
           </div>
           <div class="header-badges">
+            <button type="button" class="emergency-override-btn" id="emergencyOverrideBtn" title="Need urgent access without delay?">
+              🚨 Urgent Override
+            </button>
             <div class="mode-badge" id="sessionStatusBadge">
               🔒 Guarded Mode
             </div>
@@ -81,18 +162,24 @@
             <span class="dot"></span>
             <span class="dot"></span>
             <span class="dot"></span>
+            <span class="typing-label">Friday is thinking...</span>
           </div>
         </div>
 
         <!-- Quick suggestions chips -->
         <div class="quick-chips-wrapper">
-          <span class="chips-label">Quick Prompts:</span>
+          <div class="chips-header-row">
+            <span class="chips-label">💡 Try Unique Gatekeeper Triggers:</span>
+            <span class="chips-hint">Click to test psychology features</span>
+          </div>
           <div class="quick-chips" id="quickChips">
-            <button class="chip" data-prompt="I want to open Instagram."><img src="assets/instagram.png" alt="Instagram" class="chip-logo"> Open Instagram</button>
-            <button class="chip" data-prompt="I want to watch YouTube."><img src="assets/youtube.png" alt="YouTube" class="chip-logo"> Watch YouTube</button>
-            <button class="chip" data-prompt="I need Instagram for college work.">🎓 College Project</button>
-            <button class="chip" data-prompt="I'm just bored.">🥱 I'm bored</button>
-            <button class="chip" data-prompt="I want to play games.">🎮 Play Games</button>
+            <button class="chip" data-prompt="I want to open Instagram."><img src="assets/instagram.png" alt="Instagram" class="chip-logo"> 1. "Why Open It?" Gate</button>
+            <button class="chip" data-prompt="Bas 5 minute Instagram.">🧠 2. "Just 5 Min" Excuse Detector</button>
+            <button class="chip" data-prompt="Open Instagram again, I just closed it.">🔄 3. Relapse Detector</button>
+            <button class="chip" data-prompt="I need YouTube for studying python."><img src="assets/youtube.png" alt="YouTube" class="chip-logo"> 🎯 4. Goal Guardian</button>
+            <button class="chip" data-prompt="I'm just bored, let me scroll.">⏳ 5. Smart 2m Delay</button>
+            <button class="chip" data-prompt="Give me Instagram for 30 minutes.">🤝 6. AI Negotiation Mode</button>
+            <button class="chip" data-prompt="Help me reduce my screen time.">📊 7. Habit Coaching</button>
           </div>
         </div>
 
@@ -102,15 +189,17 @@
             <input 
               type="text" 
               id="userInput" 
-              placeholder="Tell Friday what you want to use..." 
+              placeholder="Tell Friday why you need this app (or test: 'Bas 5 min', 'Negotiate 30m', 'bored')..." 
               autocomplete="off" 
               required
             />
+            <button type="button" id="clearInputBtn" class="clear-input-btn hidden" title="Clear text">✕</button>
             <button type="submit" id="sendBtn" class="send-btn" aria-label="Send message">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <svg class="send-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="22" y1="2" x2="11" y2="13"></line>
                 <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
               </svg>
+              <span class="send-spinner hidden"></span>
             </button>
           </div>
         </form>
@@ -118,18 +207,77 @@
 
       <!-- Right: Usage Dashboard & Focus Card -->
       <aside class="dashboard-column">
+        <!-- Today's Goal Card -->
+        <div class="stats-card glass-panel goal-card">
+          <div class="card-title-row">
+            <div class="card-title-with-icon">
+              <span class="card-icon">🎯</span>
+              <div>
+                <h3>Today's Goal</h3>
+                <p class="card-subtitle">"Study for 3 hours"</p>
+              </div>
+            </div>
+            <span class="goal-pill-badge" id="goalPercentBadge">72% Done</span>
+          </div>
+
+          <div class="goal-progress-wrap">
+            <div class="goal-meta-row">
+              <span class="goal-completed-text"><strong id="goalCurrentText">2h 10m</strong> / 3h 00m</span>
+              <span class="goal-remaining-text" id="goalRemainingText">50m remaining</span>
+            </div>
+            <div class="goal-progress-bar-bg">
+              <div class="goal-progress-bar-fill" id="goalProgressBarFill" style="width: 72.2%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Digital Behavior Profile Card -->
+        <div class="stats-card glass-panel behavior-profile-card">
+          <div class="card-title-row">
+            <div class="card-title-with-icon">
+              <span class="card-icon">🧠</span>
+              <div>
+                <h3>Digital Behavior Profile</h3>
+                <p class="card-subtitle">AI Habit & Trigger Analysis</p>
+              </div>
+            </div>
+            <span class="personality-badge" id="personalityBadge">🔄 Re-opener Pattern</span>
+          </div>
+          
+          <div class="behavior-insight-box">
+            <div class="behavior-insight-header">
+              <span class="insight-icon">🔍</span>
+              <strong>Today's Behavioral Pattern</strong>
+            </div>
+            <p class="behavior-insight-desc" id="behaviorInsightText">
+              "Your biggest friction point isn't high total time—it's frequent <strong>5-minute impulsive re-opens</strong> every 25 minutes of studying."
+            </p>
+          </div>
+          
+          <div class="trigger-detection-row">
+            <span class="trigger-tag">🕵️ Trigger Identified</span>
+            <span class="trigger-desc">Focus fatigue peaks after <strong>~25 min</strong></span>
+          </div>
+        </div>
+
         <!-- Focus Score Card -->
         <div class="stats-card glass-panel focus-card">
           <div class="card-title-row">
-            <h3>Focus Health</h3>
+            <div class="card-title-with-icon">
+              <span class="card-icon">📊</span>
+              <div>
+                <h3>Focus Health</h3>
+                <p class="card-subtitle">Real-time habit analysis</p>
+              </div>
+            </div>
             <span class="badge-tag">Daily Metric</span>
           </div>
           
           <div class="focus-metric-wrap">
             <div class="focus-circle">
-              <svg class="progress-ring" width="110" height="110">
-                <circle class="progress-ring-bg" stroke-width="8" fill="transparent" r="46" cx="55" cy="55"/>
-                <circle class="progress-ring-fill" stroke-width="8" stroke-linecap="round" fill="transparent" r="46" cx="55" cy="55"/>
+              <svg class="progress-ring" width="105" height="105">
+                <circle class="progress-ring-bg" stroke-width="8" fill="transparent" r="44" cx="52.5" cy="52.5"/>
+                <circle class="progress-ring-fill" id="focusRingFill" stroke-width="8" stroke-linecap="round" fill="transparent" r="44" cx="52.5" cy="52.5"/>
               </svg>
               <div class="focus-number-display">
                 <span class="score-val" id="focusScoreValue">72</span>
@@ -138,8 +286,8 @@
             </div>
 
             <div class="focus-details">
-              <div class="focus-status-pill">Fair Control</div>
-              <p class="focus-advice">3 intentional unlocks today. Watch out for passive scrolling!</p>
+              <div class="focus-status-pill" id="focusStatusPill">Fair Control</div>
+              <p class="focus-advice" id="focusAdviceText">Your focus is good today, but social media usage is increasing. Protect your afternoon session!</p>
             </div>
           </div>
         </div>
@@ -147,8 +295,14 @@
         <!-- Today's Usage Breakdown -->
         <div class="stats-card glass-panel usage-card">
           <div class="card-title-row">
-            <h3>Today's Usage</h3>
-            <span class="time-stamp">Updated Just Now</span>
+            <div class="card-title-with-icon">
+              <span class="card-icon">📱</span>
+              <div>
+                <h3>Today's Usage</h3>
+                <p class="card-subtitle">Monitored Distraction Apps</p>
+              </div>
+            </div>
+            <span class="time-stamp">Updated Live</span>
           </div>
 
           <div class="usage-list">
@@ -160,10 +314,10 @@
               <div class="app-meta">
                 <div class="app-info-row">
                   <span class="app-name">Instagram</span>
-                  <span class="app-duration">52 min</span>
+                  <span class="app-duration" id="igUsageText">52 min</span>
                 </div>
                 <div class="progress-bar-bg">
-                  <div class="progress-bar-fill ig-fill" style="width: 65%;"></div>
+                  <div class="progress-bar-fill ig-fill" style="width: 72%;"></div>
                 </div>
               </div>
             </div>
@@ -176,7 +330,7 @@
               <div class="app-meta">
                 <div class="app-info-row">
                   <span class="app-name">YouTube</span>
-                  <span class="app-duration">1h 15m</span>
+                  <span class="app-duration" id="ytUsageText">1h 15m</span>
                 </div>
                 <div class="progress-bar-bg">
                   <div class="progress-bar-fill yt-fill" style="width: 85%;"></div>
@@ -192,10 +346,26 @@
               <div class="app-meta">
                 <div class="app-info-row">
                   <span class="app-name">Gaming</span>
-                  <span class="app-duration">35 min</span>
+                  <span class="app-duration" id="gameUsageText">35 min</span>
                 </div>
                 <div class="progress-bar-bg">
-                  <div class="progress-bar-fill game-fill" style="width: 45%;"></div>
+                  <div class="progress-bar-fill game-fill" style="width: 58%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chrome / Web Browsing -->
+            <div class="usage-item" data-app="chrome">
+              <div class="app-icon-wrap chrome">
+                <span>🌐</span>
+              </div>
+              <div class="app-meta">
+                <div class="app-info-row">
+                  <span class="app-name">Chrome</span>
+                  <span class="app-duration" id="chromeUsageText">42 min</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill chrome-fill" style="width: 60%;"></div>
                 </div>
               </div>
             </div>
@@ -203,7 +373,7 @@
 
           <div class="total-screen-footer">
             <span class="total-label">Total Screen Time:</span>
-            <span class="total-time">2h 42m</span>
+            <span class="total-time" id="totalScreenTimeFooter">4h 32m</span>
           </div>
         </div>
 
@@ -219,9 +389,10 @@
           <div class="active-pass-badge hidden" id="activePassBadge">
             <span class="pass-sparkle">⏱️</span>
             <div>
-              <strong>15-Minute Focus Pass Active</strong>
+              <strong id="activePassTitle">15-Minute Focus Pass Active</strong>
               <small id="passSubText">Stay on task & close when done</small>
             </div>
+            <button type="button" class="pass-cancel-btn" id="cancelPassBtn" title="End pass now">End</button>
           </div>
         </div>
       </aside>
@@ -319,6 +490,11 @@
               👁️
             </button>
           </div>
+          <div class="key-hint-box hidden" id="keyHintBox">
+            <span class="key-hint-icon">💡</span>
+            <span class="key-hint-msg" id="keyHintMsg">This looks like a Google Gemini key.</span>
+            <button type="button" class="key-hint-btn" id="keyHintBtn">Switch Provider</button>
+          </div>
           <span class="input-helper-text">
             🔒 Stored securely in your browser's LocalStorage. Never sent to third-party servers.
           </span>
@@ -357,6 +533,55 @@
           <button type="button" class="btn btn-ghost" id="cancelSettingsBtn">Cancel</button>
           <button type="button" class="btn btn-primary" id="saveSettingsBtn">Save & Apply</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Emergency Override Modal -->
+  <div class="modal-backdrop hidden" id="emergencyModal" role="dialog" aria-modal="true" aria-labelledby="emergencyModalTitle">
+    <div class="modal-window glass-panel emergency-window">
+      <div class="modal-header emergency-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon emergency-icon">🚨</span>
+          <div>
+            <h3 id="emergencyModalTitle">Emergency Access Override</h3>
+            <p class="modal-desc">Need urgent access to an app without delay? State your essential objective.</p>
+          </div>
+        </div>
+        <button class="modal-close-btn" id="closeEmergencyBtn" title="Close">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="emergencyAppSelect">Select App Needed</label>
+          <select id="emergencyAppSelect" class="form-control">
+            <option value="Instagram">Instagram (52m used today)</option>
+            <option value="YouTube">YouTube (1h 15m used today)</option>
+            <option value="Gaming">Gaming (35m used today)</option>
+            <option value="Chrome">Chrome (42m used today)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="emergencyReasonInput">Urgent Reason / Objective (Required)</label>
+          <input 
+            type="text" 
+            id="emergencyReasonInput" 
+            class="form-control" 
+            placeholder="e.g., Calling team leader, OTP verification, client emergency..."
+            required
+          />
+          <span class="input-helper-text">
+            💡 Friday grants an instant 5-minute focused pass and logs the override context.
+          </span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" id="cancelEmergencyBtn">Cancel</button>
+        <button type="button" class="btn btn-emergency-grant" id="grantEmergencyBtn">
+          ⚡ Grant 5m Emergency Pass
+        </button>
       </div>
     </div>
   </div>
