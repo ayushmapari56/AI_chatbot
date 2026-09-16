@@ -64,14 +64,15 @@ const SCREEN_TIME_DATA = {
 // Available AI Models Map
 const PROVIDER_MODELS = {
   gemini: [
-    { id: 'gemini-3.7-flash', name: 'Gemini 3.7 Flash (Fastest & Latest)' },
-    { id: 'gemini-3.6-flash', name: 'Gemini 3.6 Flash' },
-    { id: 'gemini-flash-latest', name: 'Gemini Flash (Auto-Updated)' }
+    { id: 'gemini-2.5-flash', name: 'Gemini 2.5 Flash (Recommended - Fastest)' },
+    { id: 'gemini-2.0-flash', name: 'Gemini 2.0 Flash (Next-Gen)' },
+    { id: 'gemini-1.5-flash', name: 'Gemini 1.5 Flash (Free Tier)' },
+    { id: 'gemini-1.5-pro', name: 'Gemini 1.5 Pro (Deep Reasoning)' },
+    { id: 'gemini-2.5-pro', name: 'Gemini 2.5 Pro (Advanced Reasoning)' }
   ],
   groq: [
     { id: 'llama-3.3-70b-versatile', name: 'Llama 3.3 70B Versatile (Ultra Fast)' },
-    { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B Instant' },
-    { id: 'mixtral-8x7b-32768', name: 'Mixtral 8x7B' }
+    { id: 'llama-3.1-8b-instant', name: 'Llama 3.1 8B Instant (Lightning Fast)' }
   ],
   openai: [
     { id: 'gpt-4o-mini', name: 'GPT-4o Mini (Fast & Cost-Effective)' },
@@ -145,7 +146,7 @@ const SettingsManager = {
       openai: ''
     },
     apiKey: '',
-    model: 'gemini-3.7-flash',
+    model: 'gemini-2.5-flash',
     persona: 'balanced' // 'balanced' | 'strict' | 'coach'
   },
 
@@ -175,8 +176,8 @@ const SettingsManager = {
       data.keys = { ...this.defaults.keys, ...(data.keys || {}) };
       data.apiKey = data.keys[data.provider] || '';
 
-      if (data.model && (data.model.includes('1.5') || data.model.includes('2.5') || data.model.includes('2.0'))) {
-        data.model = 'gemini-3.7-flash';
+      if (data.model && (data.model === 'gemini-3.7-flash' || data.model === 'gemini-3.6-flash' || data.model === 'gemini-flash-latest')) {
+        data.model = 'gemini-2.5-flash';
       }
       return data;
     } catch (e) {
@@ -1037,7 +1038,7 @@ function createPatternAlertElement(alertData) {
           highlightType: 'emerald'
         });
       } else if (action === 'stay-focused') {
-        appendMessage('user', 'You're right. I'll skip it and stay focused.');
+        appendMessage('user', "You're right. I'll skip it and stay focused.");
         appendMessage('ai', `That's the move! 🏆 You broke the pattern. Your focus score just got a boost.`, {
           highlightText: "+3 Focus Score Bonus! ⭐",
           highlightType: "emerald"
@@ -1066,7 +1067,7 @@ function createDelayCardElement(delayData) {
       ⏳ Smart Delay — Not a Block
       <span class="delay-badge">Cooling Period</span>
     </div>
-    <p class="delay-desc">${delayData.reason || 'Let's wait a moment before opening.'}</p>
+    <p class="delay-desc">${delayData.reason || "Let's wait a moment before opening."}</p>
     <div class="delay-timer-box">
       <span class="delay-timer-num" id="delayTimerNum_${Date.now()}">${mins}:${secs < 10 ? '0' : ''}${secs}</span>
       <span class="delay-timer-label">Wait before opening ${delayData.app || 'the app'}</span>
@@ -1116,7 +1117,7 @@ function createDelayCardElement(delayData) {
 
   card.querySelector('[data-action="stay-focused"]')?.addEventListener('click', () => {
     clearInterval(timerInterval);
-    appendMessage('user', 'I'll skip it. Staying focused.');
+    appendMessage('user', "I'll skip it. Staying focused.");
     appendMessage('ai', `Amazing self-control! 🏆 The delay worked — you chose focus over impulse. That's powerful.`, {
       highlightText: "+3 Focus Score Bonus! ⭐",
       highlightType: "emerald"
@@ -1239,9 +1240,36 @@ async function handleUserSendMessage() {
       // Call Live LLM with context
       responseObj = await callLiveAI(settings, rawText);
     } else {
-      // Intelligent Simulated Coach Fallback
-      await new Promise(r => setTimeout(r, 600));
-      responseObj = generateSimulatedResponse(rawText);
+      // Try backend proxy if available on server, or fall back to simulated coach
+      let serverResponse = null;
+      try {
+        const proxyRes = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: rawText,
+            history: DatabaseManager.getMessages().slice(-6),
+            provider: settings.provider || 'gemini',
+            model: settings.model
+          })
+        });
+        if (proxyRes.ok) {
+          const data = await proxyRes.json();
+          if (data && data.text && !data.text.includes('No API key configured')) {
+            serverResponse = parseAIResponse(data.text, rawText);
+          }
+        }
+      } catch (proxyErr) {
+        // Proxy not running locally or static host, ignore
+      }
+
+      if (serverResponse) {
+        responseObj = serverResponse;
+      } else {
+        // Intelligent Simulated Coach Fallback
+        await new Promise(r => setTimeout(r, 600));
+        responseObj = generateSimulatedResponse(rawText);
+      }
     }
 
     hideTypingIndicator();
@@ -1336,7 +1364,7 @@ async function callLiveAI(settings, userMessage) {
   const recentHistory = DatabaseManager.getMessages().slice(-6);
 
   if (provider === 'gemini') {
-    const selectedModel = (model && !model.includes('1.5') && !model.includes('2.5') && !model.includes('2.0')) ? model : 'gemini-3.7-flash';
+    const selectedModel = (model && !model.includes('3.7') && !model.includes('3.6') && !model.includes('flash-latest')) ? model : 'gemini-2.5-flash';
     return await callGeminiAPI(apiKey, selectedModel, systemPrompt, recentHistory, userMessage);
   } else if (provider === 'groq') {
     return await callOpenAICompatibleAPI('https://api.groq.com/openai/v1/chat/completions', apiKey, model || 'llama-3.3-70b-versatile', systemPrompt, recentHistory, userMessage);
@@ -1444,8 +1472,16 @@ function formatAPIErrorMessage(provider, rawMsg, statusCode) {
     if (rawMsg.includes('API_KEY_INVALID') || statusCode === 400 || statusCode === 403) {
       return 'Invalid Google Gemini API Key. Please get a free key from aistudio.google.com.';
     }
-    if (rawMsg.includes('no longer available') || statusCode === 404) {
-      return 'Selected Gemini model is unavailable. Switched to Gemini 3.7 Flash.';
+    if (rawMsg.includes('not found') || rawMsg.includes('no longer available') || statusCode === 404) {
+      return 'Selected Gemini model is unavailable. Try switching to Gemini 2.5 Flash or Gemini 2.0 Flash in Settings.';
+    }
+  }
+  if (provider === 'groq') {
+    if (rawMsg.includes('invalid_api_key') || statusCode === 401) {
+      return 'Invalid Groq API Key. Please verify your key at console.groq.com.';
+    }
+    if (statusCode === 429) {
+      return 'Groq rate limit reached. Please wait a moment or switch to Gemini.';
     }
   }
   return rawMsg;
@@ -1454,7 +1490,7 @@ function formatAPIErrorMessage(provider, rawMsg, statusCode) {
 // Connection test utility
 async function testAPIConnection(provider, apiKey, model) {
   if (provider === 'gemini') {
-    const selectedModel = (model && !model.includes('1.5') && !model.includes('2.5') && !model.includes('2.0')) ? model : 'gemini-3.7-flash';
+    const selectedModel = (model && !model.includes('3.7') && !model.includes('3.6') && !model.includes('flash-latest')) ? model : 'gemini-2.5-flash';
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

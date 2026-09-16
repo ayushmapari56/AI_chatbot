@@ -21,15 +21,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { message, history = [], provider = 'gemini', model } = req.body || {};
+  const { message, history = [], provider = 'gemini', model, apiKey: clientApiKey } = req.body || {};
 
   if (!message) {
     return res.status(400).json({ error: 'Missing user message.' });
   }
 
-  const geminiKey = process.env.GEMINI_API_KEY;
-  const openaiKey = process.env.OPENAI_API_KEY;
-  const groqKey = process.env.GROQ_API_KEY;
+  const geminiKey = clientApiKey || process.env.GEMINI_API_KEY;
+  const openaiKey = clientApiKey || process.env.OPENAI_API_KEY;
+  const groqKey = clientApiKey || process.env.GROQ_API_KEY;
 
   const systemPrompt = `You are "Friday", an intelligent ScreenTime Gatekeeper and mindful digital habits AI assistant.
 Your goal is to prevent doomscrolling and encourage intentional screen usage.
@@ -41,7 +41,7 @@ Behavior Rules:
 
   try {
     if (provider === 'gemini' && geminiKey) {
-      const selectedModel = (model && !model.includes('1.5') && !model.includes('2.5')) ? model : 'gemini-3.7-flash';
+      const selectedModel = (model && model !== 'gemini-3.7-flash' && model !== 'gemini-3.6-flash' && model !== 'gemini-flash-latest') ? model : 'gemini-2.5-flash';
       const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${geminiKey}`;
 
       const contents = history.map(h => ({
@@ -61,7 +61,7 @@ Behavior Rules:
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || 'Gemini error');
+      if (!response.ok) throw new Error(data.error?.message || `Gemini API error (${response.status})`);
       const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
       return res.status(200).json({ text });
     }
@@ -87,7 +87,7 @@ Behavior Rules:
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || 'OpenAI error');
+      if (!response.ok) throw new Error(data.error?.message || `OpenAI API error (${response.status})`);
       const text = data.choices?.[0]?.message?.content;
       return res.status(200).json({ text });
     }
@@ -113,13 +113,13 @@ Behavior Rules:
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error?.message || 'Groq error');
+      if (!response.ok) throw new Error(data.error?.message || `Groq API error (${response.status})`);
       const text = data.choices?.[0]?.message?.content;
       return res.status(200).json({ text });
     }
 
     return res.status(200).json({
-      text: "No backend API key configured on server. Use the client Settings modal to enter your personal key!"
+      text: "No API key configured. Please enter your API key in API Settings!"
     });
 
   } catch (error) {
